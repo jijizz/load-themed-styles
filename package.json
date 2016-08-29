@@ -11,7 +11,7 @@
   "keywords": [],
   "dependencies": {},
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "~3.5.0",
     "gulp": "^3.9.1",
     "@microsoft/node-library-build": "~0.2.2"
   }
