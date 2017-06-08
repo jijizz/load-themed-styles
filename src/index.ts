@@ -167,9 +167,9 @@ function resolveThemableArray(splitStyleArray: ThemableArray): string {
       const themedValue: string | undefined = theme ? theme[themeSlot] : undefined;
       const defaultValue: string = currentValue.defaultValue || 'inherit';
 
-      // Warn to console if we hit an unthemed value even when themes are provided, unless "DEBUG" is false
+      // Warn to console if we hit an unthemed value even when themes are provided, unless "DEBUG" is provided and false
       // Allow the themedValue to be undefined to explicitly request the default value.
-      if (theme && !themedValue && console && !(themeSlot in theme) && (typeof DEBUG === 'undefined' || DEBUG)) {
+      if (theme && !themedValue && console && !(themeSlot in theme) && DEBUG) {
         console.warn(`Theming value not provided for "${themeSlot}". Falling back to "${defaultValue}".`);
       }
 
@@ -225,11 +225,15 @@ export function splitStyles(styles: string): ThemableArray {
  * @param {IStyleRecord} styleRecord May specify a style Element to update.
  */
 function registerStyles(styleArray: ThemableArray, styleRecord?: IStyleRecord): void {
+  const styleText: string = resolveThemableArray(styleArray);
+  if (styleRecord && styleRecord.styleElement.textContent === styleText) {
+    return;
+  }
   const head: HTMLHeadElement = document.getElementsByTagName('head')[0];
   const styleElement: HTMLStyleElement = document.createElement('style');
 
   styleElement.type = 'text/css';
-  styleElement.appendChild(document.createTextNode(resolveThemableArray(styleArray)));
+  styleElement.appendChild(document.createTextNode(styleText));
 
   if (styleRecord) {
     head.replaceChild(styleElement, styleRecord.styleElement);
